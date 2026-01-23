@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Head from "next/head";
 import { Eye, Clock, Tag } from "lucide-react";
 import Link from "next/link";
-import { getSingleBlogAPI } from "@/services/user.service";
+import { getSingleVideoAPI } from "@/services/user.service";
 
 export default function VideoPlayer({ slug }) {
   const [videoData, setVideoData] = useState(null);
@@ -17,8 +17,10 @@ export default function VideoPlayer({ slug }) {
 
     const fetchVideo = async () => {
       try {
-        const res = await getSingleBlogAPI(slug); // API call
-        setVideoData(res.data); // your backend returns formatted video object
+        const res = await getSingleVideoAPI(slug); // API call
+        setVideoData(res.data);
+        console.log(res.data);
+        
         setLoading(false);
       } catch (err) {
         console.error("Error fetching video:", err);

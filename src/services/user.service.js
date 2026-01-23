@@ -1,69 +1,9 @@
 import axiosInstance from "../utils/axiosInstance";
 
-export const callToBackend = async (userId, transaction_id, plan_id) => {
-  if (typeof window === "undefined") return;
-  const accessToken = localStorage.getItem("accessToken");
-
-  if (!accessToken) {
-    throw new Error("User is not logged in");
-  }
-  try {
-    const response = await axiosInstance.post(
-      "/api/user/subscription/create",
-      {
-        userId,
-        transaction_id,
-        plan_id,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-    return response.data;
-  } catch (error) {
-    console.error("Error creating subscription:", error);
-    throw error;
-  }
-};
-
-export const userRegisterAPI = async (name, email, password, phoneNumber) => {
-  if (typeof window === "undefined") return;
-  try {
-    const response = await axiosInstance.post("/api/user/register", {
-      name,
-      email,
-      password,
-      phoneNumber,
-    });
-    return response;
-  } catch (error) {
-    console.error("Error during user registration:", error);
-    throw error;
-  }
-};
-
-export const internregisterAPI = async (fullName, phone, email, password) => {
-  if (typeof window === "undefined") return;
-  try {
-    const response = await axiosInstance.post("/api/intern/register", {
-      fullName,
-      phone,
-      email,
-      password,
-    });
-    return response;
-  } catch (error) {
-    console.error("Error during user registration:", error);
-    throw error;
-  }
-};
-
 export const StaffregisterAPI = async (fullName, phone, email, password) => {
   if (typeof window === "undefined") return;
   try {
-    const response = await axiosInstance.post("/api/staff/register", {
+    const response = await axiosInstance.post("/api/user/register", {
       fullName,
       phone,
       email,
@@ -76,7 +16,94 @@ export const StaffregisterAPI = async (fullName, phone, email, password) => {
   }
 };
 
-export const DeleteAdmin = async (id) => {
+export const createCategoryAPI = async (form) => {
+  try {
+    const formData = new FormData();
+
+    formData.append("name", form.name);
+    formData.append("slug", form.slug);
+    formData.append("shortDescription", form.shortDescription || "");
+    formData.append("metaTitle", form.metaTitle || "");
+    formData.append("metaDescription", form.metaDescription || "");
+
+    if (form.imageFile) {
+      formData.append("image", form.imageFile);
+    }
+
+    const response = await axiosInstance.post(
+      "/api/video/createcategory",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    return response;
+  } catch (error) {
+    console.error("Error creating category:", error);
+    throw error;
+  }
+};
+
+export const createVideoAPI = async (payload) => {
+  try {
+    const formData = new FormData();
+
+    formData.append("title", payload.title);
+    formData.append("slug", payload.slug);
+    formData.append("category", payload.category);   
+    formData.append("tags", payload.tags || "");     
+    formData.append("shortDescription", payload.shortDescription || "");
+    formData.append("metaTitle", payload.metaTitle || "");
+    formData.append("metaDescription", payload.metaDescription || "");
+    formData.append("videoUrl", payload.videoUrl);
+    formData.append("duration", payload.duration || "");
+    formData.append("description", payload.description || "");
+
+    if (payload.thumbnail) {
+      formData.append("thumbnail", payload.thumbnail);
+    }
+
+    const response = await axiosInstance.post(
+      "/api/video/createvideo", // your video create route
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    return response;
+  } catch (error) {
+    console.error("Error creating video:", error);
+    throw error;
+  }
+};
+
+export const getVideosAPI = async () => {
+  try {
+    const response = await axiosInstance.get("/api/video/getvideodashoard");
+    return response;
+  } catch (error) {
+    console.error("Error during user registration:", error);
+    throw error;
+  }
+};
+
+export const getAllVideosAPI = async () => {
+  try {
+    const response = await axiosInstance.get("/api/video/getallvideo");
+    return response;
+  } catch (error) {
+    console.error("Error during user registration:", error);
+    throw error;
+  }
+};
+
+export const deleteVideoAPI = async (id) => {
   if (typeof window === "undefined") return;
   const accessToken = localStorage.getItem("accessToken");
 
@@ -85,7 +112,7 @@ export const DeleteAdmin = async (id) => {
   }
   try {
     const response = await axiosInstance.post(
-      "/api/admin/delete",
+      "/api/video/deletevideo",
       {
         id,
       },
@@ -102,85 +129,50 @@ export const DeleteAdmin = async (id) => {
   }
 };
 
-
-
-export const createVideoAPI = async (data) => {
+export const acceptVideoAPI = async (id) => {
   if (typeof window === "undefined") return;
-
   const accessToken = localStorage.getItem("accessToken");
+
   if (!accessToken) {
     throw new Error("User is not logged in");
   }
-
-  const {
-    postTitle,
-    slug,
-    category,
-    tags,
-    metaTitle,
-    metaDescription,
-    featuredImageAlt,
-    iframeUrl,
-    contactContent,
-    featuredImage,
-  } = data;
-
-  try {
-    const formData = new FormData();
-
-    formData.append("postTitle", postTitle);
-    formData.append("slug", slug);
-    formData.append("category", category || "");
-    formData.append("tags", tags || "");
-    formData.append("metaTitle", metaTitle);
-    formData.append("metaDescription", metaDescription);
-    formData.append("featuredImageAlt", featuredImageAlt || "");
-
-    // ✅ VIDEO FIELDS
-    formData.append("iframeUrl", iframeUrl);
-    formData.append("contactContent", contactContent);
-
-    // ✅ IMAGE
-    formData.append("featuredImage", featuredImage);
-
-    const response = await axiosInstance.post("/api/video/add", formData, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "multipart/form-data",
-      },
-    });
-
-    return response.data;
-  } catch (error) {
-    console.error("Error during video creation:", error);
-    throw error;
-  }
-};
-
-export const sendinternappliAPI = async (formData) => {
   try {
     const response = await axiosInstance.post(
-      "/api/intern/sendinternappli",
-      formData,
+      "/api/video/acceptvideo",
+      {
+        id,
+      },
       {
         headers: {
-          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${accessToken}`,
         },
       }
     );
-
     return response;
   } catch (error) {
-    console.error("Error during blog creation:", error);
+    console.error("Error during user registration:", error);
     throw error;
   }
 };
+export const deleteCategoryAPI = async (id) => {
+  if (typeof window === "undefined") return;
+  const accessToken = localStorage.getItem("accessToken");
 
-
-
-export const getvideosAPI = async () => {
+  if (!accessToken) {
+    throw new Error("User is not logged in");
+  }
   try {
-    const response = await axiosInstance.get("/api/video/getvideos");
+    const response = await axiosInstance.post(
+      "/api/category/deletecategory",
+      {
+        id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
     return response;
   } catch (error) {
     console.error("Error during user registration:", error);
@@ -188,9 +180,52 @@ export const getvideosAPI = async () => {
   }
 };
 
-export const getallinternAPI = async () => {
+export const acceptCategoryAPI = async (id) => {
+  if (typeof window === "undefined") return;
+  const accessToken = localStorage.getItem("accessToken");
+
+  if (!accessToken) {
+    throw new Error("User is not logged in");
+  }
   try {
-    const response = await axiosInstance.get("/api/intern/getinterns");
+    const response = await axiosInstance.post(
+      "/api/category/acceptcategpry",
+      {
+        id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return response;
+  } catch (error) {
+    console.error("Error during user registration:", error);
+    throw error;
+  }
+};
+export const getCategoriesAPI = async () => {
+  try {
+    const response = await axiosInstance.get("/api/category/getcategorydashoard");
+    return response;
+  } catch (error) {
+    console.error("Error during user registration:", error);
+    throw error;
+  }
+};
+export const getCategoryAPI = async () => {
+  try {
+    const response = await axiosInstance.get("/api/video/getallcategory");
+    return response;
+  } catch (error) {
+    console.error("Error during user registration:", error);
+    throw error;
+  }
+};
+export const getlastBlogsAPI = async () => {
+  try {
+    const response = await axiosInstance.get("/api/blog/getlastBlogs");
     return response;
   } catch (error) {
     console.error("Error during user registration:", error);
@@ -198,6 +233,28 @@ export const getallinternAPI = async () => {
   }
 };
 
+export const userLoginAPI = async (email, password) => {
+  try {
+    const response = await axiosInstance.post("/api/user/login", {
+      email: email,
+      password: password,
+    });
+    return response;
+  } catch (error) {
+    console.error("Error logging in:", error);
+    throw error;
+  }
+};
+
+export const getallblogsAPI = async () => {
+  try {
+    const response = await axiosInstance.get("/api/blog/getallblogs");
+    return response;
+  } catch (error) {
+    console.error("Error during user registration:", error);
+    throw error;
+  }
+};
 
 export const getblogsAPI = async () => {
   const accessToken = localStorage.getItem("accessToken");
@@ -218,30 +275,59 @@ export const getblogsAPI = async () => {
   }
 };
 
-export const getlastBlogsAPI = async () => {
+export const getSingleBlogAPI = async (id) => {
   try {
-    const response = await axiosInstance.get("/api/blog/getlastBlogs");
+    const response = await axiosInstance.get(`/api/blog/${id}`);
     return response;
   } catch (error) {
     console.error("Error during user registration:", error);
     throw error;
   }
 };
+export const createBlogAPI = async (data) => {
+  if (typeof window === "undefined") return;
+  const accessToken = localStorage.getItem("accessToken");
+  if (!accessToken) {
+    throw new Error("User is not logged in");
+  }
+  const {
+    postTitle,
+    slug,
+    category,
+    tags,
+    metaTitle,
+    metaDescription,
+    featuredImageAlt,
+    content,
+    featuredImage,
+  } = data;
 
-export const getSingleBlogAPI = async (slug) => {
-  console.log('====================================');
-  console.log(slug);
-  console.log('====================================');
   try {
-    const response = await axiosInstance.get(`/api/video/${slug}`);
+    const formData = new FormData();
+    formData.append("postTitle", postTitle);
+    formData.append("slug", slug);
+    formData.append("category", category);
+    formData.append("tags", tags);
+    formData.append("metaTitle", metaTitle);
+    formData.append("metaDescription", metaDescription);
+    formData.append("featuredImageAlt", featuredImageAlt);
+    formData.append("content", content);
+    formData.append("featuredImage", featuredImage);
+
+    const response = await axiosInstance.post("/api/blog/AddBlog", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
     return response;
   } catch (error) {
-    console.error("Error during user registration:", error);
+    console.error("Error during blog creation:", error);
     throw error;
   }
 };
-
-export const getalladminAPI = async () => {
+export const rejectblogAPI = async (id) => {
   if (typeof window === "undefined") return;
   const accessToken = localStorage.getItem("accessToken");
 
@@ -249,68 +335,167 @@ export const getalladminAPI = async () => {
     throw new Error("User is not logged in");
   }
   try {
-    const response = await axiosInstance.get("/api/admin/getalladmins", {
+    const response = await axiosInstance.post(
+      "/api/blog/delete",
+      {
+        id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return response;
+  } catch (error) {
+    console.error("Error during user registration:", error);
+    throw error;
+  }
+};
+
+export const acceptblogAPI = async (id) => {
+  if (typeof window === "undefined") return;
+  const accessToken = localStorage.getItem("accessToken");
+
+  if (!accessToken) {
+    throw new Error("User is not logged in");
+  }
+  try {
+    const response = await axiosInstance.post(
+      "/api/blog/accepctblog",
+      {
+        id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return response;
+  } catch (error) {
+    console.error("Error during user registration:", error);
+    throw error;
+  }
+};
+
+/* ================= GET ALL PUBLIC PRODUCTS ================= */
+export const getAllProductsAPI = async () => {
+  try {
+    const response = await axiosInstance.get("/api/product/getallproducts");
+    return response;
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
+};
+
+/* ================= GET PRODUCTS (ADMIN / USER) ================= */
+export const getProductsAPI = async () => {
+  const accessToken = localStorage.getItem("accessToken");
+
+  if (!accessToken) {
+    throw new Error("User is not logged in");
+  }
+
+  try {
+    const response = await axiosInstance.get("/api/product/getproducts", {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
     });
     return response;
   } catch (error) {
-    console.error("Error during user registration:", error);
+    console.error("Error fetching products:", error);
     throw error;
   }
 };
-export const getallListAPI = async () => {
-  if (typeof window === "undefined") return;
-  const accessToken = localStorage.getItem("accessToken");
 
+/* ================= GET SINGLE PRODUCT ================= */
+export const getSingleProductAPI = async (id) => {
+  try {
+    const response = await axiosInstance.get(`/api/product/${id}`);
+    return response;
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    throw error;
+  }
+};
+
+/* ================= CREATE PRODUCT ================= */
+export const createProductAPI = async (data) => {
+  if (typeof window === "undefined") return;
+
+  const accessToken = localStorage.getItem("accessToken");
   if (!accessToken) {
     throw new Error("User is not logged in");
   }
+
+  const {
+    title,
+    slug,
+    price,
+    discountPrice,
+    category,
+    tags,
+    shortDescription,
+    metaTitle,
+    metaDescription,
+    description,
+    mainImage,
+    gallery,
+  } = data;
+
   try {
-    const response = await axiosInstance.get("/api/task/getalllist", {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
+    const formData = new FormData();
+
+    formData.append("title", title);
+    formData.append("slug", slug);
+    formData.append("price", price);
+    formData.append("discountPrice", discountPrice);
+    formData.append("category", category);
+    formData.append("tags", tags);
+    formData.append("shortDescription", shortDescription);
+    formData.append("metaTitle", metaTitle);
+    formData.append("metaDescription", metaDescription);
+    formData.append("description", description);
+    formData.append("mainImage", mainImage);
+
+    gallery.forEach((img) => {
+      formData.append("gallery", img);
     });
+
+    const response = await axiosInstance.post(
+      "/api/product/addproduct",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
     return response;
   } catch (error) {
-    console.error("Error during user registration:", error);
+    console.error("Error creating product:", error);
     throw error;
   }
 };
 
-export const userLoginAPI = async (email, password) => {
+/* ================= REJECT PRODUCT ================= */
+export const rejectProductAPI = async (id) => {
   if (typeof window === "undefined") return;
-  console.log(email, password);
 
-  try {
-    const response = await axiosInstance.post("/api/user/login", {
-      email: email,
-      password: password,
-    });
-    return response;
-  } catch (error) {
-    console.error("Error logging in:", error);
-    throw error;
-  }
-};
-
-
-
-export const rejectvideoAPI = async (id) => {
-  if (typeof window === "undefined") return;
   const accessToken = localStorage.getItem("accessToken");
-
   if (!accessToken) {
     throw new Error("User is not logged in");
   }
+
   try {
     const response = await axiosInstance.post(
-      "/api/video/delete",
-      {
-        id,
-      },
+      "/api/product/delete",
+      { id },
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -319,25 +504,24 @@ export const rejectvideoAPI = async (id) => {
     );
     return response;
   } catch (error) {
-    console.error("Error during user registration:", error);
+    console.error("Error rejecting product:", error);
     throw error;
   }
 };
 
-
-export const acceptvideoAPI = async (id) => {
+/* ================= ACCEPT PRODUCT ================= */
+export const acceptProductAPI = async (id) => {
   if (typeof window === "undefined") return;
-  const accessToken = localStorage.getItem("accessToken");
 
+  const accessToken = localStorage.getItem("accessToken");
   if (!accessToken) {
     throw new Error("User is not logged in");
   }
+
   try {
     const response = await axiosInstance.post(
-      "/api/video/accepctblog",
-      {
-        id,
-      },
+      "/api/product/acceptproduct",
+      { id },
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -346,151 +530,7 @@ export const acceptvideoAPI = async (id) => {
     );
     return response;
   } catch (error) {
-    console.error("Error during user registration:", error);
-    throw error;
-  }
-};
-
-export const UpdateTaskStatusID = async (id, newStatus) => {
-  if (typeof window === "undefined") return;
-  const accessToken = localStorage.getItem("accessToken");
-
-  if (!accessToken) {
-    throw new Error("User is not logged in");
-  }
-  console.log(id, newStatus);
-
-  try {
-    const response = await axiosInstance.post(
-      "/api/task/updatestatus",
-      {
-        id,
-        newStatus,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-    return response;
-  } catch (error) {
-    console.error("Error during user registration:", error);
-    throw error;
-  }
-};
-
-export const getsendnewPasssword = async (id, otp, newPassword) => {
-  if (typeof window !== "undefined")
-    try {
-      const response = await axiosInstance.post(
-        `/api/user/forgot-password/${id}/${otp}`,
-        { newPassword }
-      );
-      return response;
-    } catch (error) {
-      console.error("Error during user registration:", error);
-      throw error;
-    }
-};
-
-export const getsendEmail = async (email, option) => {
-  if (typeof window === "undefined") return;
-
-  let endpoint = "";
-  switch (option) {
-    case "password":
-      endpoint = "/api/user/forgot-password";
-      break;
-    case "email":
-      endpoint = "/api/user/change-email";
-      break;
-    default:
-      throw new Error("Invalid option selected");
-  }
-
-  try {
-    const response = await axiosInstance.post(endpoint, { email });
-    return response;
-  } catch (error) {
-    console.error(`Error during ${option} update:`, error);
-    throw error;
-  }
-};
-
-// axios other domain https://backend-booking-as.vercel.app
-import axios from "axios";
-
-const otherDomainAxios = axios.create({
-  baseURL: "https://backend-booking-as.vercel.app",
-});
-
-export const createbookingAPI = async (
-  clientName,
-  age,
-  message,
-  email,
-  serviceType,
-  phoneNumber,
-  dateTime,
-  gender,
-  user
-) => {
-  console.log(
-    clientName,
-    age,
-    message,
-    email,
-    serviceType,
-    phoneNumber,
-    dateTime,
-    gender,
-    user
-  );
-
-  try {
-    const response = await otherDomainAxios.post(
-      "/api/booking/createbookingbyid",
-      {
-        clientName,
-        age,
-        message,
-        email,
-        serviceType,
-        phoneNumber,
-        dateTime,
-        gender,
-        user,
-      }
-    );
-    return response;
-  } catch (error) {
-    console.error("Error during user registration:", error);
-    throw error;
-  }
-};
-
-export const getallpricesAPI = async ({ user }) => {
-  try {
-    const response = await otherDomainAxios.post(
-      "/api/price/getallpricesbyid",
-      { user }
-    );
-    return response;
-  } catch (error) {
-    console.error("Error during user registration:", error);
-    throw error;
-  }
-};
-
-export const getProfileData = async (user) => {
-  try {
-    const response = await otherDomainAxios.post("/api/design/getProfileData", {
-      user,
-    });
-    return response;
-  } catch (error) {
-    console.error("Error during user registration:", error);
+    console.error("Error accepting product:", error);
     throw error;
   }
 };

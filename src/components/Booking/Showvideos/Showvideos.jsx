@@ -1,101 +1,149 @@
-import {
-  acceptvideoAPI,
-  getvideosAPI,
-  rejectvideoAPI,
-} from "@/services/user.service";
+"use client";
 
+import {
+  getVideosAPI,
+  acceptVideoAPI,
+  deleteVideoAPI,
+} from "@/services/user.service"; // <-- you implement these
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { FiTrash2, FiCheck, FiX } from "react-icons/fi";
 
-const ShowVideos = () => {
-  const [videos, setVideos] = useState([]);
+const ShowVideosCMS = () => {
+  const [videoData, setVideoData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [confirmId, setConfirmId] = useState(null);
 
   useEffect(() => {
-    getAllVideos();
-  }, []);
+    let isMounted = true;
 
-  const getAllVideos = async () => {
-    try {
-      const response = await getvideosAPI();
-      setVideos(response.data);
-    } catch (err) {
-      console.error("Error fetching videos:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    const fetchVideos = async () => {
+      try {
+        const response = await getVideosAPI();
+        if (!isMounted) return;
+        setVideoData(response.data || []);
+      } catch (err) {
+        console.error("Error fetching videos:", err);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    };
+
+    fetchVideos();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleAccept = async (id) => {
     try {
-      await acceptvideoAPI(id);
-      getAllVideos(); // refresh list
+      await acceptVideoAPI(id);
+      setConfirmId(null);
+      const res = await getAllVideos();
+      setVideoData(res.data || []);
     } catch (err) {
-      console.error("Accept error:", err);
+      console.error(err);
     }
   };
 
   const handleDelete = async (id) => {
     try {
-      await rejectvideoAPI(id);
-      setVideos((prev) => prev.filter((v) => v._id !== id));
+      await deleteVideoAPI(id);
+      setConfirmId(null);
+      const res = await getAllVideos();
+      setVideoData(res.data || []);
     } catch (err) {
-      console.error("Delete error:", err);
+      console.error(err);
     }
   };
 
-  if (isLoading) {
-    return <p className="text-center text-gray-500">Loading videos...</p>;
-  }
-
   return (
-    <div className="w-[95%] mx-auto p-6 text-gray-800">
-      <div className="space-y-4">
-        {videos.map((video) => (
-          <div
-            key={video._id}
-            className="flex items-center justify-between gap-4 p-2 border border-gray-300 rounded-lg"
-          >
-            
-            <Image
-              width={50}
-              height={50}
-              src={video.image?.url || "/placeholder.png"}
-              alt={video.featuredImageAlt || video.postTitle}
-              className="w-[50px] h-[50px] rounded-md object-cover"
-            />
+    <div className="w-[95%] mx-auto p-6 text-white">
+      {isLoading ? (
+        <p className="text-center text-gray-400 text-sm">Loading videos…</p>
+      ) : videoData.length === 0 ? (
+        <p className="text-center text-gray-400 text-sm">
+          No videos found yet.
+        </p>
+      ) : (
+        <div className="space-y-4">
+          {videoData.map((video) => (
+            <div
+              key={video._id}
+              className="flex flex-col md:flex-row md:items-center border border-white/15 justify-between p-3 rounded-xl bg-[#020617]"
+            >
+              <div className="flex items-center gap-3 flex-1">
+                <div className="relative w-[72px] h-[48px] rounded-lg overflow-hidden border border-white/10 bg-black/50">
+                  <Image
+                    width={72}
+                    height={48}
+                    src={video.thumbnail?.url || "/placeholder-thumb.jpg"}
+                    alt={video.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold line-clamp-2">
+                    {video.title}
+                  </h3>
+                </div>
+              </div>
 
-            {/* Title */}
-            <h3 className="flex-1 text-sm font-medium truncate">
-              {video.title}
-            </h3>
+              {/* Right side buttons + confirm delete */}
+              <div className="mt-3 md:mt-0 flex flex-col items-end gap-2">
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleAccept(video._id)}
+                    disabled={video.accepted}
+                    className={`px-3 py-1 rounded flex items-center gap-1 text-xs ${
+                      video.accepted
+                        ? "bg-gray-600 text-gray-200 cursor-not-allowed"
+                        : "bg-emerald-600 text-white hover:bg-emerald-500"
+                    }`}
+                  >
+                    <FiCheck className="text-sm" />
+                    {video.accepted ? "Accepted" : "Accept"}
+                  </button>
 
-            {/* Actions */}
-            <div className="flex gap-2">
-              <button
-                onClick={() => handleAccept(video._id)}
-                disabled={video.accepted}
-                className={`px-3 py-1 rounded text-white text-sm ${
-                  video.accepted
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-green-500 hover:bg-green-600"
-                }`}
-              >
-                Accept
-              </button>
+                  <button
+                    onClick={() =>
+                      setConfirmId(confirmId === video._id ? null : video._id)
+                    }
+                    className="px-3 py-1 rounded flex items-center gap-1 text-xs bg-red-600 text-white hover:bg-red-500"
+                  >
+                    <FiTrash2 className="text-sm" />
+                    Delete
+                  </button>
+                </div>
 
-              <button
-                onClick={() => handleDelete(video._id)}
-                className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
-              >
-                Delete
-              </button>
+                {/* Confirm delete section */}
+                {confirmId === video._id && (
+                  <div className="mt-1 flex items-center gap-2 text-[11px] text-gray-300 bg-black/50 border border-red-500/60 px-3 py-2 rounded-lg">
+                    <span>Are you sure you want to delete this video?</span>
+                    <button
+                      onClick={() => handleDelete(video._id)}
+                      className="flex items-center gap-1 text-red-400 hover:text-red-300"
+                    >
+                      <FiTrash2 className="text-xs" />
+                      Yes
+                    </button>
+                    <button
+                      onClick={() => setConfirmId(null)}
+                      className="flex items-center gap-1 text-gray-400 hover:text-gray-300"
+                    >
+                      <FiX className="text-xs" />
+                      No
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
 
-export default ShowVideos;
+export default ShowVideosCMS;

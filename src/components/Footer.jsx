@@ -1,40 +1,69 @@
-import React from 'react';
+import React from "react";
+import Link from "next/link";
 
 export function Footer() {
   const footerLinks = [
-    { title: 'ABOUT', links: ['About Us', 'Blog', 'Press', 'Careers'] },
-    { title: 'SUPPORT', links: ['Help Center', 'Safety', 'Terms', 'Privacy'] },
-    { title: 'COMMUNITY', links: ['Forums', 'Guidelines', 'Feedback', 'Contact'] },
+    {
+      title: "ABOUT",
+      links: [
+        { label: "About Us", href: "/about" },
+        { label: "Blog", href: "/blog" },
+        { label: "Press", href: "/press" },
+        { label: "Careers", href: "/careers" },
+      ],
+    },
+    {
+      title: "SUPPORT",
+      links: [
+        { label: "Help Center", href: "/help" },
+        { label: "Safety", href: "/safety" },
+        { label: "Terms", href: "/terms" },
+        { label: "Privacy", href: "/privacy" },
+      ],
+    },
+    {
+      title: "COMMUNITY",
+      links: [
+        { label: "Forums", href: "/forums" },
+        { label: "Guidelines", href: "/guidelines" },
+        { label: "Feedback", href: "/feedback" },
+        { label: "Contact", href: "/contact" },
+      ],
+    },
   ];
 
   return (
-    <footer className="bg-[#1C1C1C] border-t border-[#0B0B0B] mt-16">
+    <footer className="bg-[#050914] border-t border-[#1f2933] mt-16">
       <div className="max-w-[1920px] mx-auto px-4 md:px-6 py-8 md:py-12">
         {/* Main Footer Content */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <div className="text-2xl md:text-3xl tracking-tight mb-4">
-              <span className="text-[#E10600]">VICE</span>
-              <span className="text-[#7B2FF7]">HUB</span>
+              <span className="text-[#e11d48]">Ladies</span>
+              <span className="text-[#f9fafb] ml-1">Nude</span>
             </div>
-            <p className="text-sm text-[#9A9A9A] leading-relaxed">
-              Premium adult entertainment platform. 18+ only.
+            <p className="text-sm text-[#9ca3af] leading-relaxed">
+              Discreet, high‑quality nude ladies videos and reels for adults who
+              appreciate elegant visuals.
             </p>
           </div>
 
           {/* Footer Links */}
           {footerLinks.map((section) => (
             <div key={section.title}>
-              <h3 className="text-sm tracking-wide mb-3 text-[#E10600]">
+              <h3 className="text-xs font-semibold tracking-[0.18em] mb-3 text-[#e11d48]">
                 {section.title}
               </h3>
               <ul className="space-y-2">
                 {section.links.map((link) => (
-                  <li key={link}>
-                    <button className="text-sm text-[#9A9A9A] hover:text-[#E10600] transition-colors">
-                      {link}
-                    </button>
+                  <li key={link.label}>
+                    <Link
+                      href={link.href}
+                      className="text-sm text-[#9ca3af] hover:text-[#f9fafb] hover:underline underline-offset-4 transition-colors"
+                    >
+                      {link.label}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -43,11 +72,12 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-[#0B0B0B]">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-[#9A9A9A]">
-            <p>© 2025 ViceHub. All rights reserved.</p>
+        <div className="pt-6 border-t border-[#1f2933]">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-xs md:text-sm text-[#6b7280]">
+            <p>© 2026 LadiesNude.com. All rights reserved.</p>
             <p className="text-center">
-              This site is for adults only. Must be 18+ to enter.
+              This website contains explicit content and is intended for adults
+              only. You must be 18 years or older to use this service.
             </p>
           </div>
         </div>

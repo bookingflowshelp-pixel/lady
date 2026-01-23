@@ -2,18 +2,22 @@
 
 import { AiOutlinePlus } from "react-icons/ai";
 import { FiList } from "react-icons/fi";
+import { BiTask } from "react-icons/bi";
+
+import { AiOutlineUserAdd } from "react-icons/ai";
 
 const Select = ({
-  Addvideo = "Add Video",
-  Showvideos = "Show Videos",
+  AddBooking = "Add blog",
+  ShowRequests = "Show Blogs",
+ 
   activeTab,
   onTabChange,
   ...props
 }) => {
   
   const tabs = [
-    { name: Addvideo, icon: <AiOutlinePlus className="mr-2 text-[17px]" />, value: "Add Video" },
-    { name: Showvideos, icon: <FiList className="mr-2 text-[17px]" />, value: "Show Videos" },
+    { name: AddBooking, icon: <AiOutlinePlus className="mr-2 text-[17px]" />, value: "Add blog" },
+    { name: ShowRequests, icon: <FiList className="mr-2 text-[17px]" />, value: "Show Blogs" },
   ];
 
   return (

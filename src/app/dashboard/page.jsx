@@ -1,11 +1,12 @@
-import ManageVideo from "@/components/Booking/videos";
+import ManagementDashboard from "@/components/Booking/ManagementDashboard";
+
 
 
 function page() {
   return (
     <div>
       
-      <ManageVideo />
+      <ManagementDashboard />
     </div>
   );
 }
