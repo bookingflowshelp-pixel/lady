@@ -31,7 +31,7 @@ export const createCategoryAPI = async (form) => {
     }
 
     const response = await axiosInstance.post(
-      "/api/video/createcategory",
+      "/api/category/createcategory",
       formData,
       {
         headers: {
