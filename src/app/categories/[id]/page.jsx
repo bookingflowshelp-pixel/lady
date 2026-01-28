@@ -14,7 +14,7 @@ export async function generateMetadata({ params }) {
   }
 
   try {
-    const res = await fetch(`http://localhost:5000/api/video/category/${id}`);
+    const res = await fetch(`https://back-lady.vercel.app/api/video/category/${id}`);
 
     if (!res.ok) throw new Error("Failed to fetch category data");
 
@@ -83,7 +83,7 @@ export default async function BlogPage({ params }) {
   let category = null;
 
   try {
-    const res = await fetch(`http://localhost:5000/api/video/category/${id}`);
+    const res = await fetch(`https://back-lady.vercel.app/api/video/category/${id}`);
 
     if (res.ok) {
       category = await res.json();

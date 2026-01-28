@@ -14,7 +14,7 @@ export async function generateMetadata({ params }) {
   }
 
   try {
-    const res = await fetch(`http://localhost:5000/api/video/${id}`);
+    const res = await fetch(`https://back-lady.vercel.app/api/video/${id}`);
 
     if (!res.ok) throw new Error("Failed to fetch blog data");
 
@@ -99,15 +99,23 @@ export default async function VideoPage({ params }) {
   try {
     const res = await fetch(`https://back-lady.vercel.app/api/video/${id}`);
 
-    if (res.ok) {
-      video = await res.json();
-      console.log(video);
+    if (!res.ok) {
+      console.error("Failed to fetch video", { id, status: res.status });
+      return;
     }
+
+    video = await res.json();
+
+    // Simple server log
+    console.log("Video loaded", {
+      id,
+      title: video?.title,
+      category: video?.category,
+      duration: video?.duration,
+    });
   } catch (error) {
-    console.error("Error fetching blog:", error);
+    console.error("Error fetching video:", error);
   }
-
-
 
   return (
     <div className="bg-[#050914] min-h-screen text-white">
