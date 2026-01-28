@@ -17,9 +17,7 @@ export function VideoGrid() {
     setIsLoading(true);
     try {
       const res = await getAllVideosAPI();
-      console.log("====================================");
-      console.log(res.data);
-      console.log("====================================");
+   
       const initialVideos = res?.data || [];
       setVideos(initialVideos);
       setHasMore(initialVideos.length === PAGE_SIZE);

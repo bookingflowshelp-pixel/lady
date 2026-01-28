@@ -1,33 +1,14 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 export function Footer() {
   const footerLinks = [
     {
       title: "ABOUT",
       links: [
-        { label: "About Us", href: "/about" },
-        { label: "Blog", href: "/blog" },
-        { label: "Press", href: "/press" },
-        { label: "Careers", href: "/careers" },
-      ],
-    },
-    {
-      title: "SUPPORT",
-      links: [
-        { label: "Help Center", href: "/help" },
-        { label: "Safety", href: "/safety" },
-        { label: "Terms", href: "/terms" },
-        { label: "Privacy", href: "/privacy" },
-      ],
-    },
-    {
-      title: "COMMUNITY",
-      links: [
-        { label: "Forums", href: "/forums" },
-        { label: "Guidelines", href: "/guidelines" },
-        { label: "Feedback", href: "/feedback" },
-        { label: "Contact", href: "/contact" },
+        { label: "Categories", href: "/Categories" },
+        { label: "Reels", href: "/video" },
       ],
     },
   ];
@@ -39,9 +20,16 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <div className="text-2xl md:text-3xl tracking-tight mb-4">
-              <span className="text-[#e11d48]">Ladies</span>
-              <span className="text-[#f9fafb] ml-1">Nude</span>
+            <div className="text-2xl md:text-3xl flex tracking-tight mb-4">
+              <Image
+                src="/lady.webp"
+                alt="khrzt lgnaouiii"
+                height={40}
+                width={40}
+                className="rounded-full mr-3"
+              />
+              <span className="text-[#e11d48]">Lady</span>
+              <span className="text-[#f9fafb] ml-1">Porn</span>
             </div>
             <p className="text-sm text-[#9ca3af] leading-relaxed">
               Discreet, high‑quality nude ladies videos and reels for adults who

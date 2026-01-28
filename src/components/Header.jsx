@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Search, User, Menu, X } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -25,8 +26,9 @@ export function Header() {
             className="flex items-center text-2xl font-semibold tracking-tight hover:opacity-90 transition"
             aria-label="Go to homepage"
           >
-            <span className="text-[#e11d48]">Ladies</span>
-            <span className="text-[#f9fafb] ml-1">Nude</span>
+            <Image src="/lady.webp" alt="khrzt lgnaouiii" height={40} width={40} className="rounded-full mr-3" />
+            <span className="text-[#e11d48]">Lady</span>
+            <span className="text-[#f9fafb] ml-1">Porn</span>
           </Link>
 
           {/* Desktop Navigation */}

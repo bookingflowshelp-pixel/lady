@@ -14,7 +14,7 @@ export async function generateMetadata({ params }) {
   }
 
   try {
-    const res = await fetch(`https://back-lady.vercel.app/api/video/${id}`);
+    const res = await fetch(`http://localhost:5000/api/video/${id}`);
 
     if (!res.ok) throw new Error("Failed to fetch blog data");
 
@@ -85,24 +85,29 @@ export default async function VideoPage({ params }) {
   const { id } = await params;
 
   let video = null;
+  function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min; // [web:3][web:26]
+  }
 
+  function formatNumber(num) {
+    return num.toLocaleString("en-US"); // [web:16][web:18]
+  }
+
+  // inside your component, before the return()
+  const views = formatNumber(getRandomInt(10000, 500000));
+  const likes = formatNumber(getRandomInt(500, 50000));
   try {
-    const res = await fetch(
-      `https://back-lady.vercel.app/api/video/${id}`
-    );
+    const res = await fetch(`https://back-lady.vercel.app/api/video/${id}`);
 
     if (res.ok) {
-
       video = await res.json();
       console.log(video);
-      
     }
   } catch (error) {
     console.error("Error fetching blog:", error);
   }
 
-  const formattedViews = new Intl.NumberFormat("en-US").format(video.views);
-  const formattedLikes = new Intl.NumberFormat("en-US").format(video.likes);
+
 
   return (
     <div className="bg-[#050914] min-h-screen text-white">
@@ -111,9 +116,9 @@ export default async function VideoPage({ params }) {
       <main className="max-w-6xl mx-auto px-6 pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           {/* LEFT: Video Player + Info */}
-          <div className="lg:col-span-8">
+          <div className="lg:col-span-8 mt-[150px]">
             {/* Video Title */}
-            <h1 className="text-2xl md:text-3xl font-bold mb-3">
+            <h1 className="text-2xl  md:text-3xl font-bold mb-3">
               {video.title}
             </h1>
 
@@ -121,11 +126,11 @@ export default async function VideoPage({ params }) {
             <div className="flex flex-wrap items-center gap-4 text-xs text-gray-400 mb-4">
               <span className="inline-flex items-center gap-1">
                 <Eye size={14} />
-                {formattedViews} views
+                {views} views
               </span>
               <span className="inline-flex items-center gap-1">
                 <Heart size={14} className="text-pink-400" />
-                {formattedLikes} likes
+                {likes} likes
               </span>
               <span className="inline-flex items-center gap-1">
                 <CalendarDays size={14} />
@@ -138,7 +143,7 @@ export default async function VideoPage({ params }) {
             </div>
 
             {/* Video iframe (use backend URL here) */}
-            <div className="relative w-full overflow-hidden rounded-2xl border border-white/10 bg-black aspect-video mb-4">
+            <div className="relative w-full overflow-hidden rounded-2xl border border-white/10 bg-black  aspect-[9/16] mb-4">
               <iframe
                 src={video.videoUrl}
                 title={video.title}
@@ -194,11 +199,11 @@ export default async function VideoPage({ params }) {
                   </div>
                   <div className="flex justify-between">
                     <dt className="text-gray-500">Views</dt>
-                    <dd>{formattedViews}</dd>
+                    <dd>{views}</dd>
                   </div>
                   <div className="flex justify-between">
                     <dt className="text-gray-500">Likes</dt>
-                    <dd>{formattedLikes}</dd>
+                    <dd>{likes}</dd>
                   </div>
                   <div className="flex justify-between">
                     <dt className="text-gray-500">Published</dt>

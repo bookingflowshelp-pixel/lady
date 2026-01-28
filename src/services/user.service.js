@@ -154,6 +154,7 @@ export const acceptVideoAPI = async (id) => {
     throw error;
   }
 };
+
 export const deleteCategoryAPI = async (id) => {
   if (typeof window === "undefined") return;
   const accessToken = localStorage.getItem("accessToken");
@@ -205,6 +206,7 @@ export const acceptCategoryAPI = async (id) => {
     throw error;
   }
 };
+
 export const getCategoriesAPI = async () => {
   try {
     const response = await axiosInstance.get("/api/category/getcategorydashoard");
@@ -214,6 +216,7 @@ export const getCategoriesAPI = async () => {
     throw error;
   }
 };
+
 export const getCategoryAPI = async () => {
   try {
     const response = await axiosInstance.get("/api/video/getallcategory");
@@ -223,6 +226,7 @@ export const getCategoryAPI = async () => {
     throw error;
   }
 };
+
 export const getlastBlogsAPI = async () => {
   try {
     const response = await axiosInstance.get("/api/blog/getlastBlogs");
@@ -284,6 +288,7 @@ export const getSingleBlogAPI = async (id) => {
     throw error;
   }
 };
+
 export const createBlogAPI = async (data) => {
   if (typeof window === "undefined") return;
   const accessToken = localStorage.getItem("accessToken");
@@ -327,6 +332,7 @@ export const createBlogAPI = async (data) => {
     throw error;
   }
 };
+
 export const rejectblogAPI = async (id) => {
   if (typeof window === "undefined") return;
   const accessToken = localStorage.getItem("accessToken");

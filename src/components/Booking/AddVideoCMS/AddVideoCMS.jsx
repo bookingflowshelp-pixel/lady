@@ -186,7 +186,7 @@ export default function AddVideoCMS() {
                     {loadingCategories ? "Loading…" : "Select a category"}
                   </option>
                   {categories.map((cat) => (
-                    <option key={cat._id} value={cat._id}>
+                    <option key={cat._id} value={cat.name}>
                       {cat.name}
                     </option>
                   ))}

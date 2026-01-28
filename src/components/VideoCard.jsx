@@ -27,7 +27,7 @@ export function VideoCard({
       aria-label={title}
     >
       {/* Thumbnail */}
-      <div className="relative aspect-video overflow-hidden rounded-xl bg-[#111827]">
+      <div className="relative aspect-[9/16] overflow-hidden rounded-xl bg-[#111827]">
         <img
           src={thumbnailUrl}
           alt={title}
