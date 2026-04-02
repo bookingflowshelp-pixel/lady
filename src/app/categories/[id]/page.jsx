@@ -51,7 +51,7 @@ export async function generateMetadata({ params }) {
         article: {
           publishedTime: blog.createdAt,
           modifiedTime: blog.updatedAt,
-          authors: [blog.user?.name || "OliveExtra Team"],
+          authors: [blog.user?.name || "lady Team"],
           section: blog.category,
           tags: blog.tags || [],
         },
@@ -62,7 +62,7 @@ export async function generateMetadata({ params }) {
         title,
         description,
         images: imageUrl ? [imageUrl] : [],
-        site: "@Olivextra",
+        site: "@lady",
       },
 
       robots: "index, follow",
@@ -91,6 +91,7 @@ export default async function BlogPage({ params }) {
   } catch (error) {
     console.error("Error fetching blog:", error);
   }
+
 
   return (
     <div className="bg-gray-100">
